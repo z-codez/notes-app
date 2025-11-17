@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:18-alpine
+    container_name: notes-app-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: dev_user
+      POSTGRES_PASSWORD: dev_password
+      POSTGRES_DB: notes_app_db
+    ports:
+      - "5431:5432"  
+    volumes:
+      - db_data_dev:/var/lib/postgresql
+
+  backend:
+    image: notes-app-backend:1
+    container_name: notes-app-backend-1
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    volumes: 
+      - ./notes-app-backend:/backend # Mount backend code for live editing
+
+  
+volumes:
+  db_data_dev:
