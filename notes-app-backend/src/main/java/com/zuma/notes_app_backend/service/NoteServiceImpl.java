@@ -45,7 +45,6 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public void deleteNoteById(Long id) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deleteNoteById'");
     }
 
