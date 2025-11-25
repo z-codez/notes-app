@@ -1,4 +1,4 @@
-
+import { useState } from "react";
 import { Platform, StyleSheet, ScrollView, View, Dimensions, Pressable, FlatList, useColorScheme } from "react-native";
 import { HelloWave } from "@/components/hello-wave";
 import { ThemedText } from "@/components/themed-text";
@@ -21,6 +21,8 @@ const notes = [
 export default function HomeScreen() {
 
   const router = useRouter();
+
+  const [pressed, setPressed] =  useState(false);
 
   return (
     <View style = {styles.container}>
@@ -64,10 +66,15 @@ export default function HomeScreen() {
       )
         
       }
-      {/* TODO: ADD ADDNOTEBTN */}
-      <Pressable style={styles.addNoteBtn}
+      {/* TODO: FINISH ADDNOTEBTN */}
+      <Pressable
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
+      style={styles.addNoteBtn}
       onPress={() => router.push('/new')}>
-        <View style={styles.addSymbol}></View>
+        <View style={styles.addSymbol}>
+          <View style={styles.afterAddSymbol}></View>
+        </View>
       </Pressable>
     </View>
   );
@@ -78,6 +85,8 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 'auto',
     marginTop: height * 0.1, // Dimensions API to get screen height
+    marginBottom: height * 0.1,
+    gap: 20,
   },
 
   titleContainer: {
@@ -90,8 +99,36 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 
-  addNoteBtn: {},
-  addSymbol: {},
+  addNoteBtn: {
+    backgroundColor: '#eba834',
+    width: 60,
+    height: 60,
+    borderRadius: 50,
+    alignSelf: 'flex-end',
+  },
+  addSymbol: {
+    backgroundColor: '#fff',
+    height: 30,
+    width: 3,
+    position: 'relative',
+    top: 14,
+    left: 28,
+
+    // 3d shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    //elevation: 8, // for Android
+  },
+  afterAddSymbol: {
+    backgroundColor: '#fff',
+    height: 3,
+    width: 30,
+    position: 'absolute',
+    top: 13.5,
+    left: -13.5,
+  },
   addNoteIcon: {},
 });
 
