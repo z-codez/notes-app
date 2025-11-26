@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Platform, StyleSheet, ScrollView, View, Dimensions, Pressable, FlatList, useColorScheme } from "react-native";
 import { HelloWave } from "@/components/hello-wave";
 import { ThemedText } from "@/components/themed-text";
@@ -25,7 +25,8 @@ export default function HomeScreen() {
   const [pressed, setPressed] =  useState(false);
 
   return (
-    <View style = {styles.container}>
+    <View
+    style = {styles.container}>
       <View style={styles.titleContainer}>
         <ThemedText type="title">Welcome to Notes</ThemedText>
         <HelloWave />
@@ -70,7 +71,8 @@ export default function HomeScreen() {
       <Pressable
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
-      style={styles.addNoteBtn}
+      // Conditional styling based on pressed state.
+      style={[styles.addNoteBtn, pressed && styles.addNoteBtnPressed]}
       onPress={() => router.push('/new')}>
         <View style={styles.addSymbol}>
           <View style={styles.afterAddSymbol}></View>
@@ -84,9 +86,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 'auto',
-    marginTop: height * 0.1, // Dimensions API to get screen height
+    marginTop: height * 0.1, // Dynamic vertical margin based on device height
     marginBottom: height * 0.1,
-    gap: 20,
   },
 
   titleContainer: {
@@ -105,6 +106,25 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 50,
     alignSelf: 'flex-end',
+    // TODO: adjust position dynamically based on device dimensions
+    marginRight: 10,
+    marginBottom: 15,
+
+    // 3d shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8, // for Android
+  },
+  // Pressed state for add note button
+  addNoteBtnPressed: {
+    backgroundColor: '#d18b2c',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4, // for Android
+
   },
   addSymbol: {
     backgroundColor: '#fff',
@@ -114,12 +134,6 @@ const styles = StyleSheet.create({
     top: 14,
     left: 28,
 
-    // 3d shadow
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    //elevation: 8, // for Android
   },
   afterAddSymbol: {
     backgroundColor: '#fff',
