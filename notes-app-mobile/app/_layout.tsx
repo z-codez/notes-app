@@ -11,8 +11,10 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
+      {/* animation controls the transitions between screen. Forward and back */}
+      <Stack screenOptions={{ animation: 'slide_from_right' }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="new" options={{ title: 'New Note' }} />
         {/* <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} /> */}
       </Stack>
       <StatusBar style="auto" />
