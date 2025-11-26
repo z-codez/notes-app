@@ -5,7 +5,7 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useRouter } from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-
+import { useSafeAreaStyles } from "@/hooks/use-safe-area-insets";
 
 // Get device dimensions. I am usings Dimensions API instead of useWindowDimensions hook. This is because the hook
 // causes unnecessary re-renders, which is not needed for my current use case.
@@ -16,24 +16,32 @@ const notes = [
   { id: '2', title: 'Second Note', subtitle: 'This is the second note.', body: 'Body of the second note.'},
   { id: '3', title: 'Third Note', subtitle: 'This is the third note.', body: 'Body of the third note.'},
   { id: '4', title: 'Fourth Note', subtitle: 'This is the fourth note.', body: 'Body of the fourth note.'},
+  { id: '5', title: 'Fifth Note', subtitle: 'This is the fifth note.', body: 'Body of the fifth note.'},
+  { id: '6', title: 'Sixth Note', subtitle: 'This is the sixth note.', body: 'Body of the sixth note.'},
 ]; //TODO: replace Placeholder for actual notes availability logic
 
 export default function HomeScreen() {
+
+  const safeAreaStyles = useSafeAreaStyles().safeAreaPadding;
 
   const router = useRouter();
 
   const [pressed, setPressed] =  useState(false);
 
+  const showFlatList = true; // TODO: replace with actual logic to determine if notes are available;
+
+  const colorScheme = useColorScheme();
+
   return (
     <View
-    style = {styles.container}>
+    style = {[safeAreaStyles, styles.container]}>
       <View style={styles.titleContainer}>
         <ThemedText type="title">Welcome to Notes</ThemedText>
         <HelloWave />
       </View>
       {/* If else statement in JSX is forbidden, I used a ternary operator*/}
-      {notes.length > 0 ? (
-        <FlatList
+      {notes.length > 0 && showFlatList ? (
+        <FlatList style={styles.flatListOrDefault}
         data={notes}
         keyExtractor={(item) => item.id}
         renderItem={({item}) => (
@@ -44,30 +52,28 @@ export default function HomeScreen() {
           }
             
           )}>
-            <View style = {styles.noteContainer}>
+            <ThemedView style = {styles.noteContainer}>
               <ThemedText type="subtitle">{item.title}</ThemedText>
-              <ThemedText type="default">{item.subtitle}</ThemedText>
-          </View>
+              <ThemedText type='defaultSemiBold'>{item.subtitle}</ThemedText>
+          </ThemedView>
           </Pressable>
           
         )}
         ></FlatList>
       ) : (
-        <View>
-          {/* TODO: Style this icon */}
+        <View style={[styles.flatListOrDefault, {alignItems: "center", justifyContent: "center", gap: 20}]}>
           <IconSymbol
-            size={30}
-            color={useColorScheme() === 'dark' ? '#fff' : '#000'}
+            size={90}
+            color={colorScheme === 'dark' ? '#fff' : '#000'}
             name="square.and.pencil"
             style={styles.addNoteIcon}
           ></IconSymbol>  
-          <ThemedText type="default">No notes available. Tap the + button to add a new note.</ThemedText>
+          <ThemedText type="default">No notes available. Tap the + button below to add a new note.</ThemedText>
         </View>
         
       )
         
       }
-      {/* TODO: FINISH ADDNOTEBTN */}
       <Pressable
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
@@ -85,19 +91,33 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 'auto',
-    marginTop: height * 0.1, // Dynamic vertical margin based on device height
-    marginBottom: height * 0.1,
+    marginHorizontal: width * 0.05, // Dynamic horizontal margin based on device width
+    marginVertical: 20,
+    gap: 30,
   },
 
   titleContainer: {
     flexDirection: "row",
-    // alignItems: "center",
-    gap: 20,
+    alignSelf: "center",
+    gap: 10,
+  },
+
+  flatListOrDefault: {
+    flex: 2, // Dynamic height based on device height',
   },
   noteContainer: {
-    gap: 8,
+    //fontFamily: Platform.OS === 'ios' ? 'Helvetica' : 'Roboto',
+    gap: 10,
     marginBottom: 8,
+    padding: 15,
+    borderRadius: 8,
+    // Shadow for iOS
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    // Elevation for Android
+    elevation: 3,
   },
 
   addNoteBtn: {
