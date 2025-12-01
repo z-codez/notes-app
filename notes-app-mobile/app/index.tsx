@@ -5,7 +5,7 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useRouter } from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { SafeAreaContainer } from "@/components/SafeAreaContainer";
+import { SafeAreaContainer } from "@/components/safe-area-container";
 
 // Get device dimensions. I am usings Dimensions API instead of useWindowDimensions hook. This is because the hook
 // causes unnecessary re-renders, which is not needed for my current use case.
