@@ -5,7 +5,7 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useRouter } from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useSafeAreaStyles } from "@/hooks/use-safe-area-insets";
+import { SafeAreaContainer } from "@/components/SafeAreaContainer";
 
 // Get device dimensions. I am usings Dimensions API instead of useWindowDimensions hook. This is because the hook
 // causes unnecessary re-renders, which is not needed for my current use case.
@@ -22,8 +22,6 @@ const notes = [
 
 export default function HomeScreen() {
 
-  const safeAreaStyles = useSafeAreaStyles().safeAreaPadding;
-
   const router = useRouter();
 
   const [pressed, setPressed] =  useState(false);
@@ -33,8 +31,8 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme();
 
   return (
-    <View
-    style = {[safeAreaStyles, styles.container]}>
+    <SafeAreaContainer
+    style = {[styles.container]}>
       <View style={styles.titleContainer}>
         <ThemedText type="title">Welcome to Notes</ThemedText>
         <HelloWave />
@@ -84,7 +82,7 @@ export default function HomeScreen() {
           <View style={styles.afterAddSymbol}></View>
         </View>
       </Pressable>
-    </View>
+    </SafeAreaContainer>
   );
 }
 
@@ -94,6 +92,7 @@ const styles = StyleSheet.create({
     marginHorizontal: width * 0.05, // Dynamic horizontal margin based on device width
     marginVertical: 20,
     gap: 30,
+    justifyContent: "space-between",
   },
 
   titleContainer: {
@@ -103,7 +102,7 @@ const styles = StyleSheet.create({
   },
 
   flatListOrDefault: {
-    flex: 2, // Dynamic height based on device height',
+    flex: 1, // Dynamic height based on device height',
   },
   noteContainer: {
     //fontFamily: Platform.OS === 'ios' ? 'Helvetica' : 'Roboto',
@@ -127,8 +126,8 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     alignSelf: 'flex-end',
     // TODO: adjust position dynamically based on device dimensions
-    marginRight: 10,
-    marginBottom: 15,
+    //marginRight: 10,
+    //marginBottom: 15,
 
     // 3d shadow
     shadowColor: '#000',
