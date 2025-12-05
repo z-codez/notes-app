@@ -11,8 +11,9 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    // Note: Adding backgroundColor to the top-most wrapper fixes the transition between screens.
+    <SafeAreaProvider style={{backgroundColor: colorScheme === 'dark' ? DarkTheme.colors.background : DefaultTheme.colors.background}}>
+      <ThemeProvider  value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       {/* animation controls the transitions between screen. Forward and back */}
         <Stack screenOptions={{ animation: 'slide_from_right' }}>
           <Stack.Screen name="index" options={{ headerShown: false }} />

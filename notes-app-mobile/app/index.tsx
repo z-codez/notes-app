@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Platform, StyleSheet, ScrollView, View, Dimensions, Pressable, FlatList, useColorScheme } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { StyleSheet, View, Dimensions, Pressable, FlatList, useColorScheme } from "react-native";
 import { HelloWave } from "@/components/hello-wave";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -20,15 +20,44 @@ const notes = [
   { id: '6', title: 'Sixth Note', subtitle: 'This is the sixth note.', body: 'Body of the sixth note.'},
 ]; //TODO: replace Placeholder for actual notes availability logic
 
+
 export default function HomeScreen() {
+
+  // TODO: Learn more about useRef
+  // Hook: useRef is used to store state that is not needed for rendering.
+  // It does not trigger a re-render
+  const currentItemIdRef = useRef("");
 
   const router = useRouter();
 
   const [pressed, setPressed] =  useState(false);
 
-  const showFlatList = true; // TODO: replace with actual logic to determine if notes are available;
+  // Event handling for addNewButton
+  // Hook: useEffect hook for side effects(navigation)
+  const [newNoteBtnPressed, setNewNoteBtnPressed] = useState(false);
+  
+  useEffect(() => {
+    if (newNoteBtnPressed) {
+      router.push('/new');
+      setNewNoteBtnPressed(false);
+    }
+  }, [newNoteBtnPressed, router]);
 
+  // Event handling for noteContainer
+  const [noteContainerPressed, setNoteContainerPressed] = useState<boolean>(false);
+
+  useEffect(()=> {
+    if (noteContainerPressed) {
+      router.push({pathname: '/note', params: {id: currentItemIdRef.current}});
+      setNoteContainerPressed(false);
+      currentItemIdRef.current = ""; // TODO: test first
+    }
+  }, [noteContainerPressed, router]);
+
+  const showFlatList = notes.length > 0; // TODO: Use Memo or use Effect ?
   const colorScheme = useColorScheme();
+
+  
 
   return (
     <SafeAreaContainer
@@ -38,18 +67,17 @@ export default function HomeScreen() {
         <HelloWave />
       </View>
       {/* If else statement in JSX is forbidden, I used a ternary operator*/}
-      {notes.length > 0 && showFlatList ? (
+      {showFlatList ? (
         <FlatList style={styles.flatListOrDefault}
         data={notes}
         keyExtractor={(item) => item.id}
         renderItem={({item}) => (
-          <Pressable onPress={() => router.push({
-            // I am passing note details as params to the note screen
-            pathname: '/note',
-            params: { id: item.id, title: item.title, subtitle: item.subtitle, body: item.body}
-          }
-            
-          )}>
+          <Pressable onPress={() =>{
+            setNoteContainerPressed(true);
+            currentItemIdRef.current = item.id;
+        
+          }}
+          >
             <ThemedView style = {styles.noteContainer}>
               <ThemedText type="subtitle">{item.title}</ThemedText>
               <ThemedText type='defaultSemiBold'>{item.subtitle}</ThemedText>
@@ -77,7 +105,7 @@ export default function HomeScreen() {
       onPressOut={() => setPressed(false)}
       // Conditional styling based on pressed state.
       style={[styles.addNoteBtn, pressed && styles.addNoteBtnPressed]}
-      onPress={() => router.push('/new')}>
+      onPress={() => setNewNoteBtnPressed(true)}>
         <View style={styles.addSymbol}>
           <View style={styles.afterAddSymbol}></View>
         </View>

@@ -11,7 +11,8 @@ export default function NewNoteScreen() {
     const formattedDate = getFormattedDate(new Date());
     return (
         <View style={styles.container}>
-            <ThemedInput 
+            <ThemedInput
+                autoFocus={true} // focuses the input
                 type="title"
                 placeholder="Titel" // TODO: localize
                 placeholderTextColor="#888"
