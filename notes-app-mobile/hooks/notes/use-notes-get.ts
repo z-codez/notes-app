@@ -1,5 +1,6 @@
-import { Note, getNotes } from "@/services/api/notesApi";
+import {getNotes } from "@/services/api/notesApi";
 import { useEffect, useState } from "react";
+import type { Note } from "@/services/api/types/note";
 
 // Custom hook to get notes. TODO: implement real data fetching logic.
 export function useNotesGet() {
@@ -7,11 +8,27 @@ export function useNotesGet() {
     // Here, we simply import and return the notes from the notesApi.
 
     const [notes, setNotes] = useState<Note[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
+    // No dependency so that it runs only once on mount
     useEffect(() => {
-        const fetchedNotes = getNotes();
-        setNotes(fetchedNotes);
+        async function fetchNotes() {
+            try {
+                const fetchedNotes = await getNotes();
+                setNotes(fetchedNotes);
+            } catch(err) {
+                if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError("Unknown error occurred");
+                }
+            } finally {
+                setLoading(false);
+            }    
+        } // Side effect
+        fetchNotes();
     }, []);
     
-    return notes; 
+    return {notes, loading, error}; 
 }

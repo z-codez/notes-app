@@ -3,39 +3,28 @@ import { StyleSheet, View, Dimensions, Pressable, FlatList, useColorScheme } fro
 import { HelloWave } from "@/components/hello-wave";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { useRouter } from "expo-router";
+import { useRouter} from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { SafeAreaContainer } from "@/components/safe-area-container";
+import { useNotesGet } from "@/hooks/notes/use-notes-get";
 
 // Get device dimensions. I am usings Dimensions API instead of useWindowDimensions hook. This is because the hook
 // causes unnecessary re-renders, which is not needed for my current use case.
 const {height, width } = Dimensions.get('window');
 
-const notes = [
-  { id: '1', title: 'First Note', subtitle: 'This is the first note.', body: 'Body of the first note.'},
-  { id: '2', title: 'Second Note', subtitle: 'This is the second note.', body: 'Body of the second note.'},
-  { id: '3', title: 'Third Note', subtitle: 'This is the third note.', body: 'Body of the third note.'},
-  { id: '4', title: 'Fourth Note', subtitle: 'This is the fourth note.', body: 'Body of the fourth note.'},
-  { id: '5', title: 'Fifth Note', subtitle: 'This is the fifth note.', body: 'Body of the fifth note.'},
-  { id: '6', title: 'Sixth Note', subtitle: 'This is the sixth note.', body: 'Body of the sixth note.'},
-]; //TODO: replace Placeholder for actual notes availability logic
-
 
 export default function HomeScreen() {
 
-  // TODO: Learn more about useRef
-  // Hook: useRef is used to store state that is not needed for rendering.
-  // It does not trigger a re-render
-  const currentItemIdRef = useRef("");
-
+  const {notes, loading, error} = useNotesGet();
+  
   const router = useRouter();
 
-  const [pressed, setPressed] =  useState(false);
+  const [pressed, setPressed] =  useState<boolean>(false);
 
   // Event handling for addNewButton
   // Hook: useEffect hook for side effects(navigation)
-  const [newNoteBtnPressed, setNewNoteBtnPressed] = useState(false);
-  
+  const [newNoteBtnPressed, setNewNoteBtnPressed] = useState<boolean>(false);
+
   useEffect(() => {
     if (newNoteBtnPressed) {
       router.push('/new');
@@ -45,6 +34,11 @@ export default function HomeScreen() {
 
   // Event handling for noteContainer
   const [noteContainerPressed, setNoteContainerPressed] = useState<boolean>(false);
+
+  // TODO: Learn more about useRef
+  // Hook: useRef is used to store state that is not needed for rendering.
+  // It does not trigger a re-render
+  const currentItemIdRef = useRef("");
 
   useEffect(()=> {
     if (noteContainerPressed) {
@@ -57,8 +51,43 @@ export default function HomeScreen() {
   const showFlatList = notes.length > 0; // TODO: Use Memo or use Effect ?
   const colorScheme = useColorScheme();
 
-  
 
+  // TODO: Add a loading spinner. Should be a component
+  // If Data is still loading. This is a loading screen
+  if(loading) {
+    return (
+      <SafeAreaContainer
+      style = {[styles.container]}>
+        <View style={styles.titleContainer}>
+          <ThemedText type="title">Welcome to Notes</ThemedText>
+          <HelloWave />
+        </View>
+        <View style={[styles.flatListOrDefault, {alignItems: "center", justifyContent: "center", gap: 20}]}>
+          <ThemedText type="defaultSemiBold">Loading...</ThemedText>
+        </View>
+      </SafeAreaContainer>
+    );
+  }
+
+  // If there is an error, this is an error screen.
+  // Should be a component
+  if (error) {
+    return (
+      <SafeAreaContainer
+      style = {[styles.container]}>
+        <View style={styles.titleContainer}>
+          <ThemedText type="title">Welcome to Notes</ThemedText>
+          <HelloWave />
+        </View>
+        <View style={[styles.flatListOrDefault, {alignItems: "center", justifyContent: "center", gap: 20}]}>
+          <ThemedText type="defaultSemiBold">Error: {error}</ThemedText>
+        </View>
+      </SafeAreaContainer>
+    );
+  }
+
+
+  
   return (
     <SafeAreaContainer
     style = {[styles.container]}>

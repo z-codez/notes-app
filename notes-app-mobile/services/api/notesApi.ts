@@ -1,41 +1,28 @@
-class Note {
-    id: string;
-    title: string;
-    subtitle: string;
-    date: string;
-    body: string;
+import type {Note} from '@/services/api/types/note';
 
-    constructor(id: string, title: string, subtitle: string, date: string, body: string) {
-        this.id = id;
-        this.title = title;
-        this.subtitle = subtitle;
-        this.date = date;
-        this.body = body;
-    }
-
-}
-export {Note};
-
-const notes: Note[] = []; 
-
-// // Placeholder notes data.
-// const notes = [
-//   new Note('1', 'First Note', 'This is the first note.', 'Body of the first note.'),
-//   new Note('2', 'Second Note', 'This is the second note.', 'Body of the second note.'),
-//   new Note('3', 'Third Note', 'This is the third note.', 'Body of the third note.'),
-//   new Note('4', 'Fourth Note', 'This is the fourth note.', 'Body of the fourth note.'),
-//   new Note('5', 'Fifth Note', 'This is the fifth note.', 'Body of the fifth note.'),
-//   new Note('6', 'Sixth Note', 'This is the sixth note.', 'Body of the sixth note.'),
-// ];
+// Placeholder notes data.
+const notes : Note[] = [
+  { id: '1', title: 'First Note', subtitle: 'This is the first note.', body: 'Body of the first note.'},
+  { id: '2', title: 'Second Note', subtitle: 'This is the second note.', body: 'Body of the second note.'},
+  { id: '3', title: 'Third Note', subtitle: 'This is the third note.', body: 'Body of the third note.'},
+  { id: '4', title: 'Fourth Note', subtitle: 'This is the fourth note.', body: 'Body of the fourth note.'},
+  { id: '5', title: 'Fifth Note', subtitle: 'This is the fifth note.', body: 'Body of the fifth note.'},
+  { id: '6', title: 'Sixth Note', subtitle: 'This is the sixth note.', body: 'Body of the sixth note.'},
+]; //TODO: replace Placeholder for actual notes availability logic
 
 
-export function getNotes(): Note[] {
-    console.log("Getting Notes: " + notes)
+
+
+export async function getNotes(): Promise<Note[]> {
+    await notes // 
     return notes;
 }
 
-export function addNote(note : Note): void {
-    notes.push(note);
+
+
+export async function addNote(note : Note) {
+    await notes.push(note);
+    if (notes.length === 6) throw new Error("Failed to add Note");
 }
 
 export function deleteNote(noteId: string): void {
