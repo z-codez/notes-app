@@ -6,7 +6,7 @@ import { ThemedView } from "@/components/themed-view";
 import { useRouter} from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { SafeAreaContainer } from "@/components/safe-area-container";
-import { useNotesGet } from "@/hooks/notes/use-notes-get";
+import { useNotesGetAll } from "@/hooks/notes/use-notes-api";
 
 // Get device dimensions. I am usings Dimensions API instead of useWindowDimensions hook. This is because the hook
 // causes unnecessary re-renders, which is not needed for my current use case.
@@ -15,7 +15,7 @@ const {height, width } = Dimensions.get('window');
 
 export default function HomeScreen() {
 
-  const {notes, loading, error} = useNotesGet();
+  const {notes, loading, error} = useNotesGetAll();
   
   const router = useRouter();
 
@@ -38,7 +38,7 @@ export default function HomeScreen() {
   // TODO: Learn more about useRef
   // Hook: useRef is used to store state that is not needed for rendering.
   // It does not trigger a re-render
-  const currentItemIdRef = useRef("");
+  const currentItemIdRef = useRef<string>("");
 
   useEffect(()=> {
     if (noteContainerPressed) {

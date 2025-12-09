@@ -1,9 +1,9 @@
-import {getNotes } from "@/services/api/notesApi";
+import {getNotes } from "@/services/api/notes-api";
 import { useEffect, useState } from "react";
 import type { Note } from "@/services/api/types/note";
 
 // Custom hook to get notes. TODO: implement real data fetching logic.
-export function useNotesGet() {
+export function useNotesGetAll() {
     // In a real app, this would fetch data from an API or database.
     // Here, we simply import and return the notes from the notesApi.
 
@@ -31,4 +31,20 @@ export function useNotesGet() {
     }, []);
     
     return {notes, loading, error}; 
+}
+
+export function useNotesGetOne() {
+    
+}
+
+export function useNotesUpdate() {
+    
+}
+
+export function useNotesPost() {
+    
+}   
+
+export function useNotesDelete() {
+    
 }

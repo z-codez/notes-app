@@ -12,7 +12,7 @@ export function getIntlFormattedDate(locale: Intl.Locale): string {
 export function getFormattedDate(date: Date): string {
   const day = date.getDate();
   const month = date.toLocaleString('de', { month: 'long' });
-  const year = date.getFullYear();
+  //const year = date.getFullYear();
   const hours = date.getHours();
   const minutes = date.getMinutes();
 
