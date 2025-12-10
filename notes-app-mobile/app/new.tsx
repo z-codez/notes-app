@@ -4,16 +4,19 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { ThemedText } from "@/components/themed-text";
 import { getFormattedDate } from "@/utils/date";
 import { ThemedInput } from "@/components/themed-input";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useNotesGetOne } from "@/hooks/notes/use-notes-api";
+
 
 //const { height, width } = Dimensions.get('window');
 
-export default function NewNoteScreen() {
-    const formattedDate = getFormattedDate(new Date());
+export default function NewOrEditNoteScreen() {
 
-    //const appStateRef = useRef(AppState.currentState);
+
+
+        //const appStateRef = useRef(AppState.currentState);
     
-    // This saves the note when app state changes to background
+        // This saves the note when app state changes to background
     useEffect(() => {
         const subscription = AppState.addEventListener(
             "change",
@@ -23,18 +26,32 @@ export default function NewNoteScreen() {
                 //     (titleRef || bodyRef)   
                 // ) {
                 // }
-                console.log("Next state: " + typeof nextState);
+                console.log("Next state: " + nextState);
              });
         return () => subscription.remove();     
     }, []);
 
+        // Detects when the screen is focused
+    useFocusEffect(
+        useCallback(() => {
+            return () => {// runs when the screen is unfocused
+                console.log("Screen unfocused");
+
+                // TODO: save note
+                
+                // setTimeout(() => {
+                //    
+                // }, 0);
+            }
+        }, [])
+    );
+
     const [title, setTitle] = useState<string>("");
     const [body, setBody] = useState<string>("");
 
+
     const titleRef = useRef(title);
     const bodyRef = useRef(body);
-
-    
 
     // Updates the values to titleRef and bodyRef to avoid stale state;
     useEffect(() => {
@@ -42,24 +59,24 @@ export default function NewNoteScreen() {
         bodyRef.current = body;
     }, [title, body]);
 
-    // Detects when the screen is focused
-    useFocusEffect(
-        useCallback(() => {
-            //noteSavedRef.current = false;
-            return () => {// runs when the screen is unfocused
-                console.log("Screen unfocused");
+    const {id} : {id: string} = useLocalSearchParams();
 
-                // TODO: save note
-                
-                // setTimeout(() => {
-                //     noteSavedRef.current = true;
-                //     console.log(noteSavedRef.current);
-                // }, 0);
-            }
-        }, [])
-    );
+    const {note, error, loading} = useNotesGetOne(id);
+    
+    // Hook: Set title and body when note changes. React does not allow setting state in the body of react component.
+    useEffect(() => {
+        if(note) {
+            setTitle(note.title);
+            setBody(note.body);
+        }
+    }, [note]);
 
+    if(loading) return <ThemedText>Loading...</ThemedText>;
+    if(error) return <ThemedText>{error}</ThemedText>;
+   
+    const formattedDate = getFormattedDate(new Date());
 
+    // New and Edit Note Screen.
     return (
         <View style={styles.container}>
             <ThemedInput
@@ -67,7 +84,7 @@ export default function NewNoteScreen() {
                 autoCapitalize="sentences"
                 //autoCorrect={false}
                 type="title"
-                placeholder="Titel" // TODO: localize
+                placeholder={id ? undefined : "Titel"} // TODO: localize
                 placeholderTextColor="#888"
                 cursorColor={"#888"}
                 style={styles.title}
@@ -80,7 +97,7 @@ export default function NewNoteScreen() {
                 type="default"
                 placeholderTextColor="#888"
                 cursorColor={"#888"}
-                placeholder="Start writing your note here..." // TODO: localize
+                placeholder={id ? undefined : "Start writing your note here..."} // TODO: localize
                 style={styles.body}
                 onChangeText={setBody}
                 value={body}
