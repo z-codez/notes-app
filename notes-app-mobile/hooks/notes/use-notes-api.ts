@@ -1,4 +1,4 @@
-import {getNotes } from "@/services/api/notes-api";
+import {getNotes, getNote } from "@/services/api/notes-api";
 import { useEffect, useState } from "react";
 import type { Note } from "@/services/api/types/note";
 
@@ -33,8 +33,32 @@ export function useNotesGetAll() {
     return {notes, loading, error}; 
 }
 
-export function useNotesGetOne() {
-    
+export function useNotesGetOne(id:string) {
+
+    const [note, setNote] = useState<Note>();
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if(!id) return; 
+        setLoading(true);  
+        async function fetchNote() {
+                try {
+                    const fetchedNote = await getNote(id);
+                    setNote(fetchedNote);
+                } catch(error) {
+                    if(error instanceof Error) {
+                        setError(error.message);
+                    }
+                } finally {
+                    setLoading(false);
+                }
+        }
+        fetchNote();
+
+    }, [id]);
+
+    return {note, error, loading};
 }
 
 export function useNotesUpdate() {

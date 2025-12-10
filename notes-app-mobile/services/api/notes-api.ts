@@ -18,6 +18,14 @@ export async function getNotes(): Promise<Note[]> {
     return notes;
 }
 
+export async function getNote(id: string) : Promise<Note> {
+    const note =  await notes.find((note) => note.id === id);
+
+    if(note === undefined) throw new Error("Note not found");
+
+    return note;
+} 
+
 
 
 export async function addNote(note : Note) {

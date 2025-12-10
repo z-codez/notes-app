@@ -42,7 +42,7 @@ export default function HomeScreen() {
 
   useEffect(()=> {
     if (noteContainerPressed) {
-      router.push({pathname: '/note', params: {id: currentItemIdRef.current}});
+      router.push({pathname: '/new', params: {id: currentItemIdRef.current}});
       setNoteContainerPressed(false);
       currentItemIdRef.current = ""; // TODO: test first
     }
