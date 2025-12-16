@@ -1,6 +1,9 @@
 # NOTES APP 
+
+Note: This project is ongoing and not yet complete.
  
- A Fullstack mobile project to practice react native and spring.
+ A Fullstack mobile project to practice react native and spring. 
+
 
 
 ## Technologies Used:
