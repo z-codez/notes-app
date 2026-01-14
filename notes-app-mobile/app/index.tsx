@@ -6,6 +6,7 @@ import { ThemedView } from "@/components/themed-view";
 import { useRouter} from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { SafeAreaContainer } from "@/components/safe-area-container";
+import { fetch } from "@react-native-community/netinfo";
 import { useNotesGetAll } from "@/hooks/notes/use-notes-api";
 
 // Get device dimensions. I am usings Dimensions API instead of useWindowDimensions hook. This is because the hook
@@ -14,6 +15,14 @@ const {height, width } = Dimensions.get('window');
 
 
 export default function HomeScreen() {
+
+  let doesInternetWork = null;
+
+  fetch().then((state: any) => {
+    if (state.isInternetReachable) doesInternetWork = true;
+  });
+
+  if (doesInternetWork) {}
 
   const {notes, loading, error} = useNotesGetAll();
   
