@@ -6,9 +6,15 @@ export function initDb() {
             id INTEGER PRIMARY KEY,
             title TEXT NOT NULL,
             content TEXT,
-            updated_at TEXT NOT NULL,
-            deleted_at TEXT INTEGER,
+            updated_at INTEGER NOT NULL,
+            deleted_at INTEGER,
             sync_status TEXT NOT NULL
         );
+    `);
+}
+
+export function resetDb() {
+    db.execSync(`
+        DROP TABLE IF EXISTS notes;
     `);
 }
