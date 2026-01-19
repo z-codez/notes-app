@@ -26,3 +26,13 @@ export async function addNote(note: Note): Promise<any> {
     );
 
 }
+
+export async function updateNote(note: Note): Promise<any> {
+    // Using a prepared statement to prevent SQL injection
+    return db.runAsync(
+        `UPDATE notes
+         SET title = ?, content = ?, updated_at = ?, sync_status = 'dirty' 
+         WHERE id = ?`,
+        [note.title, note.content ?? "", note.updated_at, note.id]
+    );
+}
