@@ -6,13 +6,17 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useEffect } from 'react';
-import { initDb } from '@/services/local-storage/sql-lite/initDb';
+import { initDb, resetDb } from '@/services/local-storage/sql-lite/initDb';
 
 
 export default function RootLayout() {
 
-  // Initialize local sqlLite database.
   useEffect(() => {
+    // TODO: remove this when the app is ready
+    // resets the database during development
+    if (__DEV__) {
+      resetDb();
+    }
     initDb();
   }, []);
   
