@@ -1,17 +1,21 @@
 // TODO: IMPLEMENT storage
 import { StyleSheet, View, AppState, AppStateStatus } from "react-native";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, use } from "react";
 import { ThemedText } from "@/components/themed-text";
 import { getFormattedDate } from "@/utils/date";
 import { ThemedInput } from "@/components/themed-input";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useNotesGetOne } from "@/hooks/notes/use-notes-api";
-
+import { useNotesStorageGetOne, useNotesStoragePostOne } from "@/hooks/notes/use-notes-storage";
 
 //const { height, width } = Dimensions.get('window');
 
 export default function NewOrEditNoteScreen() {
 
+    // TODO: Implement saving note, in these cases:
+    // 1. When the app is in the background
+    // 2. When the screen is unfocused
+    // 3. Lastly, implement incremental persistence with debounce
 
 
         //const appStateRef = useRef(AppState.currentState);
@@ -38,6 +42,14 @@ export default function NewOrEditNoteScreen() {
                 console.log("Screen unfocused");
 
                 // TODO: save note
+
+                const note = {
+                    title: titleRef.current,
+                    body: bodyRef.current
+                };
+
+                useNotesStoragePostOne(note);
+
                 
                 // setTimeout(() => {
                 //    
@@ -62,6 +74,7 @@ export default function NewOrEditNoteScreen() {
     const {id} : {id: string} = useLocalSearchParams();
 
     const {note, error, loading} = useNotesGetOne(id);
+    //const {note, error, loading} = useNotesStorageGetOne(id);
     
     // Hook: Set title and body when note changes. React does not allow setting state in the body of react component.
     useEffect(() => {

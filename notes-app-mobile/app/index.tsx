@@ -7,7 +7,8 @@ import { useRouter} from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { SafeAreaContainer } from "@/components/safe-area-container";
 import { fetch } from "@react-native-community/netinfo";
-import { useNotesGetAll } from "@/hooks/notes/use-notes-api";
+import { useNotesStorageGetAll } from "@/hooks/notes/use-notes-storage";
+//import { useNotesGetAll } from "@/hooks/notes/use-notes-api";
 
 // Get device dimensions. I am usings Dimensions API instead of useWindowDimensions hook. This is because the hook
 // causes unnecessary re-renders, which is not needed for my current use case.
@@ -24,7 +25,9 @@ export default function HomeScreen() {
 
   if (doesInternetWork) {}
 
-  const {notes, loading, error} = useNotesGetAll();
+  const {notes, loading , error} = useNotesStorageGetAll();
+
+  //const {notes, loading, error} = useNotesGetAll();
   
   const router = useRouter();
 
@@ -47,7 +50,7 @@ export default function HomeScreen() {
   // TODO: Learn more about useRef
   // Hook: useRef is used to store state that is not needed for rendering.
   // It does not trigger a re-render
-  const currentItemIdRef = useRef<string>("");
+  const currentItemIdRef = useRef<string | number>("");
 
   useEffect(()=> {
     if (noteContainerPressed) {
@@ -108,7 +111,8 @@ export default function HomeScreen() {
       {showFlatList ? (
         <FlatList style={styles.flatListOrDefault}
         data={notes}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
+        //keyExtractor={(item) => item.id}
         renderItem={({item}) => (
           <Pressable onPress={() =>{
             setNoteContainerPressed(true);
@@ -118,7 +122,7 @@ export default function HomeScreen() {
           >
             <ThemedView style = {styles.noteContainer}>
               <ThemedText type="subtitle">{item.title}</ThemedText>
-              <ThemedText type='defaultSemiBold'>{item.subtitle}</ThemedText>
+              <ThemedText type='defaultSemiBold'>I need a subtitle generator</ThemedText>
           </ThemedView>
           </Pressable>
           
