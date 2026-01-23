@@ -33,7 +33,7 @@ export function useNotesGetAll() {
     return {notes, loading, error}; 
 }
 
-export function useNotesGetOne(id:string) {
+export function useNotesGetOne(id:number) {
 
     const [note, setNote] = useState<Note>();
     const [loading, setLoading] = useState<boolean>(false);

@@ -1,93 +1,53 @@
 // TODO: IMPLEMENT storage
 import { StyleSheet, View, AppState, AppStateStatus } from "react-native";
-import { useEffect, useState, useRef, useCallback, use } from "react";
+import { useEffect, useState, useRef, use} from "react";
 import { ThemedText } from "@/components/themed-text";
 import { getFormattedDate } from "@/utils/date";
 import { ThemedInput } from "@/components/themed-input";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useNotesGetOne } from "@/hooks/notes/use-notes-api";
-import { useNotesStorageGetOne, useNotesStoragePostOne } from "@/hooks/notes/use-notes-storage";
+import { useLocalSearchParams } from "expo-router";
+import { useNotesStorageGetOne, useNotesStoragePostOneOrPutOne} from "@/hooks/notes/use-notes-storage";
 
 //const { height, width } = Dimensions.get('window');
 
 export default function NewOrEditNoteScreen() {
 
-    // TODO: Implement saving note, in these cases:
-    // 1. When the app is in the background
-    // 2. When the screen is unfocused
-    // 3. Lastly, implement incremental persistence with debounce
-
-
-        //const appStateRef = useRef(AppState.currentState);
-    
-        // This saves the note when app state changes to background
-    useEffect(() => {
-        const subscription = AppState.addEventListener(
-            "change",
-             (nextState: AppStateStatus)=> {
-                // if (
-                //     nextState === "background" &&
-                //     (titleRef || bodyRef)   
-                // ) {
-                // }
-                console.log("Next state: " + nextState);
-             });
-        return () => subscription.remove();     
-    }, []);
-
-        // Detects when the screen is focused
-    useFocusEffect(
-        useCallback(() => {
-            return () => {// runs when the screen is unfocused
-                console.log("Screen unfocused");
-
-                // TODO: save note
-
-                const note = {
-                    title: titleRef.current,
-                    body: bodyRef.current
-                };
-
-                useNotesStoragePostOne(note);
-
-                
-                // setTimeout(() => {
-                //    
-                // }, 0);
-            }
-        }, [])
-    );
-
     const [title, setTitle] = useState<string>("");
     const [body, setBody] = useState<string>("");
-
-
-    const titleRef = useRef(title);
-    const bodyRef = useRef(body);
-
-    // Updates the values to titleRef and bodyRef to avoid stale state;
-    useEffect(() => {
-        titleRef.current = title;
-        bodyRef.current = body;
-    }, [title, body]);
-
-    const {id} : {id: string} = useLocalSearchParams();
-
-    const {note, error, loading} = useNotesGetOne(id);
-    //const {note, error, loading} = useNotesStorageGetOne(id);
     
-    // Hook: Set title and body when note changes. React does not allow setting state in the body of react component.
+    // TODO: Figure out how rerendering affects const, let. how doe Date.now() work
+    // Default date and time for new notes
+    const currentUtcTime = Date.now();
+    let formattedDate = getFormattedDate(new Date(currentUtcTime));
+
+
+    const id : number = Number(useLocalSearchParams().id);
+
+    //const {note, error, loading} = useNotesGetOne(id);
+    const {note, error, loading} = useNotesStorageGetOne(id);
+    
+    // Hook: Set title and body when note to be edited is loaded. React does not allow setting state in the body of react component.
+    // Should only run twice - once for new note and once for note to be edited
     useEffect(() => {
         if(note) {
             setTitle(note.title);
-            setBody(note.body);
+            setBody(note.content ?? "");
         }
     }, [note]);
+
+    useNotesStoragePostOneOrPutOne({
+        id: id,
+        title: title,
+        content: body,
+        created_at: currentUtcTime
+    });
 
     if(loading) return <ThemedText>Loading...</ThemedText>;
     if(error) return <ThemedText>{error}</ThemedText>;
    
-    const formattedDate = getFormattedDate(new Date());
+    // Setting the date for old notes
+    if(id) {
+        formattedDate = getFormattedDate(new Date(note?.created_at ?? 0));
+    } 
 
     // New and Edit Note Screen.
     return (

@@ -3,6 +3,7 @@ export type Note = {
     id: number;
     title: string;
     content?: string | "";
+    created_at: number;
     updated_at: number;
     deleted_at?: number | null;
     sync_status: "clean" | "dirty" | "deleted";
@@ -11,12 +12,20 @@ export type Note = {
 export type SaveNote = {
     title: string;
     content?: string | "";
+    created_at: number;
 }
 
 export type UpdateNote = {
     id: number;
     title: string;
     content?: string | "";
+}
+
+export type SaveAndUpdateNote = {
+    id: number;
+    title: string;
+    content?: string | "";
+    created_at: number;
 }
 
 export async function getNotes(): Promise<Note[]> {
@@ -33,13 +42,13 @@ export async function addNote(note: SaveNote): Promise<any> {
     // Using a prepared statement to prevent SQL injection
     
     return db.runAsync(
-        `INSERT INTO notes (title, content, updated_at, sync_status) VALUES (?, ?, ?, 'dirty')`,
-        [note.title, note.content ?? "", Date.now()]
+        `INSERT INTO notes (title, content, created_at, updated_at, sync_status) VALUES (?, ?, ?, ?, 'dirty')`,
+        [note.title, note.content ?? "", note.created_at, note.created_at]
     );
 
 }
 
-export async function updateNote(note: Note): Promise<any> {
+export async function updateNote(note: UpdateNote): Promise<any> {
     // Using a prepared statement to prevent SQL injection
     return db.runAsync(
         `UPDATE notes

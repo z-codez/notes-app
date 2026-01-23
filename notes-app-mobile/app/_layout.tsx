@@ -12,13 +12,15 @@ import { initDb, resetDb } from '@/services/local-storage/sql-lite/initDb';
 export default function RootLayout() {
 
   useEffect(() => {
-    // TODO: remove this when the app is ready
-    // resets the database during development
-    if (__DEV__) {
-      resetDb();
-    }
+    // if (__DEV__) {
+    //   resetDb();
+    // }
     initDb();
   }, []);
+
+  // //resets the database during development
+  // //TODO: remove this when the app is ready
+ 
   
   const colorScheme = useColorScheme();
 

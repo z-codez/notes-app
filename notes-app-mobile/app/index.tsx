@@ -50,13 +50,13 @@ export default function HomeScreen() {
   // TODO: Learn more about useRef
   // Hook: useRef is used to store state that is not needed for rendering.
   // It does not trigger a re-render
-  const currentItemIdRef = useRef<string | number>("");
+  const currentItemIdRef = useRef< number>(0);
 
   useEffect(()=> {
     if (noteContainerPressed) {
       router.push({pathname: '/new', params: {id: currentItemIdRef.current}});
       setNoteContainerPressed(false);
-      currentItemIdRef.current = ""; // TODO: test first
+      currentItemIdRef.current = 0; // TODO: test first
     }
   }, [noteContainerPressed, router]);
 
