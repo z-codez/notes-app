@@ -29,6 +29,7 @@ export type SaveAndUpdateNote = {
 }
 
 export async function getNotes(): Promise<Note[]> {
+    // Get all rows except rows that were soft deleted.
     return db.getAllAsync(
         "SELECT * FROM notes WHERE deleted_at IS NULL ORDER BY updated_at DESC", []
     );
@@ -55,5 +56,21 @@ export async function updateNote(note: UpdateNote): Promise<any> {
          SET title = ?, content = ?, updated_at = ?, sync_status = 'dirty' 
          WHERE id = ?`,
         [note.title, note.content ?? "", Date.now(), note.id]
+    );
+}
+
+export async function deleteNote(id: number) {
+    // hard delete 
+    // return db.runAsync(
+    //     `DELETE FROM notes WHERE id = ?`,
+    //      [id]
+    // );
+
+    // soft delete
+    return db.runAsync(
+        `UPDATE notes
+         SET deleted_at = ?
+         WHERE id = ?`,
+         [Date.now(), id]
     );
 }
