@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, useRef } from "react";
 import { Note, getNotes, getNote, addNote, updateNote, SaveAndUpdateNote } from "@/services/local-storage/sql-lite/notesDb";
-import {useFocusEffect } from "expo-router";
+import {useFocusEffect} from "expo-router";
 import { AppState, AppStateStatus } from "react-native";
 
 // TODO: Finish this hook
@@ -68,17 +68,15 @@ export function useNotesStorageGetOne(id: number) {
 
 export function useNotesStoragePostOneOrPutOne(note: SaveAndUpdateNote) {
 
-    const numTimesNoteChangedRef = useRef(0);
+    const noteIdRefOnSave = useRef(0); // Ref that holds note id on save. Used to check if the note has already been saved
 
     const titleRef = useRef(note.title);
     const bodyRef = useRef(note.content ?? "");
 
     // Updates the values to titleRef and bodyRef to avoid stale state;
     useEffect(() => {
-        numTimesNoteChangedRef.current++;
         titleRef.current = note.title;
         bodyRef.current = note.content ?? "";
-        console.log("Note changed",  numTimesNoteChangedRef.current);
     }, [note]);
 
     // Lifecycle auto save
@@ -96,9 +94,15 @@ export function useNotesStoragePostOneOrPutOne(note: SaveAndUpdateNote) {
             "change",
             (nextState: AppStateStatus) => {
                 if (nextState === "background" || nextState === "inactive") {
-                    addOrUpdateNoteAsync();
+                    if(noteIdRefOnSave.current !== 0) { // Check if the note has already been saved
+                        note.id = noteIdRefOnSave.current;
+                        addOrUpdateNoteAsync();
+                    } else {
+                        addOrUpdateNoteAsync().then(() => { // Saves new note
+                        //console.log("Note saved when app is in the background", noteIdRefOnSave.current);
+                        });
+                    }
                 }
-
             });
         return () => subscription.remove();
     }, []); // No dependencies because I already have a  useEffect which tracks the user input
@@ -107,10 +111,7 @@ export function useNotesStoragePostOneOrPutOne(note: SaveAndUpdateNote) {
     useFocusEffect(
         useCallback(() => {
             return () => {// runs when the screen is unfocused
-
-                // TODO: save note
                 addOrUpdateNoteAsync();
-                console.log("Screen unfocused");
             }
         }, [])
     );
@@ -118,17 +119,17 @@ export function useNotesStoragePostOneOrPutOne(note: SaveAndUpdateNote) {
 
     async function addOrUpdateNoteAsync() {
 
-        if( titleRef.current.length === 0) {
+        
+        if( titleRef.current.length === 0) {// Check if the title is empty and return
             return;
         }
         try {
             // Check if the note should be saved or updated
             if (note.id) {
                 await updateNote({id: note.id, title:titleRef.current, content:bodyRef.current});
-                console.log("Note updated", note.id);
             } else {
-                const addedNote = await addNote({title:titleRef.current, content:bodyRef.current, created_at: note.created_at});
-                console.log("Note saved", addedNote.id);
+                const addedNoteId = await addNote({title:titleRef.current, content:bodyRef.current, created_at: note.created_at});
+                noteIdRefOnSave.current = addedNoteId;
             }
         } catch (err) {
             // TODO: Implement better error handling or logging
@@ -145,26 +146,4 @@ export function useNotesStorageDelete() {
 
 }
 
-export function useNotesStorageUpdate() {
 
-}
-
-export function useNotesStorageTest(title: string) {
-    const titleRef = useRef(title);
-
-    useEffect(() => {
-        titleRef.current = title;
-    }, [title]);
-    useEffect(() => {
-        const subscription = AppState.addEventListener(
-            "change",
-            (nextState: AppStateStatus) => {
-                if (nextState === "background" || nextState === "inactive") {
-
-                    console.log("Note title is ", titleRef.current);
-                }
-
-            });
-        return () => subscription.remove();
-    }, []);
-}
