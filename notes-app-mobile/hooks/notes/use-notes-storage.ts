@@ -111,6 +111,11 @@ export function useNotesStoragePostOneOrPutOne(note: SaveAndUpdateNote) {
     useFocusEffect(
         useCallback(() => {
             return () => {// runs when the screen is unfocused
+                if(noteIdRefOnSave.current !== 0) { // Check if the note has already been saved on AppState background / inactive
+                    note.id = noteIdRefOnSave.current;
+                    addOrUpdateNoteAsync();
+                    return
+                }
                 addOrUpdateNoteAsync();
             }
         }, [])
