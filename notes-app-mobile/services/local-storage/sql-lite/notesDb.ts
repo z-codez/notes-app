@@ -42,10 +42,12 @@ export async function getNote(id: number): Promise<Note | null> {
 export async function addNote(note: SaveNote): Promise<any> {
     // Using a prepared statement to prevent SQL injection
     
-    return db.runAsync(
+    const result = await db.runAsync(
         `INSERT INTO notes (title, content, created_at, updated_at, sync_status) VALUES (?, ?, ?, ?, 'dirty')`,
         [note.title, note.content ?? "", note.created_at, note.created_at]
     );
+
+    return result.lastInsertRowId;
 
 }
 
