@@ -1,4 +1,4 @@
-// TODO: IMPLEMENT storage
+
 import { StyleSheet, View, AppState, AppStateStatus } from "react-native";
 import { useEffect, useState, useRef, use} from "react";
 import { ThemedText } from "@/components/themed-text";
@@ -14,7 +14,6 @@ export default function NewOrEditNoteScreen() {
     const [title, setTitle] = useState<string>("");
     const [body, setBody] = useState<string>("");
     
-    // TODO: Figure out how rerendering affects const, let. how doe Date.now() work
     // Default date and time for new notes
     const currentUtcTime = Date.now();
     let formattedDate = getFormattedDate(new Date(currentUtcTime));
