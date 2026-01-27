@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, View, Dimensions, Pressable, FlatList, useColorScheme } from "react-native";
+import { 
+  StyleSheet,
+  View,
+  Dimensions,
+  Pressable, 
+  FlatList, 
+  useColorScheme } from "react-native";
 import { HelloWave } from "@/components/hello-wave";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useRouter} from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { SafeAreaContainer } from "@/components/safe-area-container";
-import { fetch } from "@react-native-community/netinfo";
+//import { fetch } from "@react-native-community/netinfo";
 import { useNotesStorageGetAll } from "@/hooks/notes/use-notes-storage";
 //import { useNotesGetAll } from "@/hooks/notes/use-notes-api";
 
@@ -17,18 +23,17 @@ const {height, width } = Dimensions.get('window');
 
 export default function HomeScreen() {
 
-  let doesInternetWork = null;
+  // let doesInternetWork = null;
 
-  fetch().then((state: any) => {
-    if (state.isInternetReachable) doesInternetWork = true;
-  });
+  // fetch().then((state: any) => {
+  //   if (state.isInternetReachable) doesInternetWork = true;
+  // });
 
-  if (doesInternetWork) {}
+  // if (doesInternetWork) {}
+  //const {notes, loading, error} = useNotesGetAll();
 
   const {notes, loading , error} = useNotesStorageGetAll();
 
-  //const {notes, loading, error} = useNotesGetAll();
-  
   const router = useRouter();
 
   const [pressed, setPressed] =  useState<boolean>(false);
@@ -114,11 +119,13 @@ export default function HomeScreen() {
         keyExtractor={(item) => item.id.toString()}
         //keyExtractor={(item) => item.id}
         renderItem={({item}) => (
-          <Pressable onPress={() =>{
-            setNoteContainerPressed(true);
-            currentItemIdRef.current = item.id;
-        
-          }}
+          <Pressable 
+            onPress={() =>{
+              setNoteContainerPressed(true);
+              currentItemIdRef.current = item.id;
+              }
+            }
+            //onLongPress={}
           >
             <ThemedView style = {styles.noteContainer}>
               <ThemedText type="subtitle">{item.title}</ThemedText>
@@ -129,7 +136,7 @@ export default function HomeScreen() {
         )}
         ></FlatList>
       ) : (
-        <View style={[styles.flatListOrDefault, {alignItems: "center", justifyContent: "center", gap: 20}]}>
+        <View style={[styles.flatListOrDefault, styles.default]}>
           <IconSymbol
             size={90}
             color={colorScheme === 'dark' ? '#fff' : '#000'}
@@ -174,6 +181,13 @@ const styles = StyleSheet.create({
   flatListOrDefault: {
     flex: 1, // Dynamic height based on device height',
   },
+
+  default: {
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 20
+  },
+
   noteContainer: {
     //fontFamily: Platform.OS === 'ios' ? 'Helvetica' : 'Roboto',
     gap: 10,
