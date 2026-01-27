@@ -12,9 +12,9 @@ import { initDb, resetDb } from '@/services/local-storage/sql-lite/initDb';
 export default function RootLayout() {
 
   useEffect(() => {
-    // if (__DEV__) {
-    //   resetDb();
-    // }
+    if (__DEV__) {
+      resetDb();
+    }
     initDb();
   }, []);
 
