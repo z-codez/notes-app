@@ -15,7 +15,7 @@ export function initDb() {
 }
 
 export function resetDb() {
-    db.execSync(`
+    db.runSync(`
         DROP TABLE IF EXISTS notes;
     `);
 }
