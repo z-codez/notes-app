@@ -14,8 +14,9 @@ export default function RootLayout() {
   useEffect(() => {
     if (__DEV__) {
       resetDb();
+      initDb();
     }
-    initDb();
+    
   }, []);
 
   // //resets the database during development

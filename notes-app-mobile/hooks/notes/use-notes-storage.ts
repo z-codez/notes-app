@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useRef } from "react";
-import { Note, getNotes, getNote, addNote, updateNote, SaveAndUpdateNote } from "@/services/local-storage/sql-lite/notesDb";
+import { Note, getNotes, getNote, addNote, updateNote, SaveAndUpdateNote, deleteNote } from "@/services/local-storage/sql-lite/notesDb";
 import {useFocusEffect} from "expo-router";
 import { AppState, AppStateStatus } from "react-native";
 
@@ -147,8 +147,27 @@ export function useNotesStoragePostOneOrPutOne(note: SaveAndUpdateNote) {
     }
 }
 
-export function useNotesStorageDelete() {
+export function useNotesStorageDelete(id: number, deletePressed: boolean) {
+    let result = null;
 
+    async function removeNote(id: number) {
+        try {
+            await deleteNote(id);
+        } catch (err) {
+            // TODO: Implement better error handling or logging
+            if (err instanceof Error) {
+                console.log(err.message);
+            } else {
+                console.log("Unknown error just occurred");
+            }
+        }
+    }
+    
+    if (deletePressed) {
+        result = removeNote(id);
+    }
+
+    return result;
 }
 
 

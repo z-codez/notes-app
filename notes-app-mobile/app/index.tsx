@@ -13,7 +13,7 @@ import { useRouter} from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { SafeAreaContainer } from "@/components/safe-area-container";
 //import { fetch } from "@react-native-community/netinfo";
-import { useNotesStorageGetAll } from "@/hooks/notes/use-notes-storage";
+import { useNotesStorageDelete, useNotesStorageGetAll } from "@/hooks/notes/use-notes-storage";
 //import { useNotesGetAll } from "@/hooks/notes/use-notes-api";
 
 // Get device dimensions. I am usings Dimensions API instead of useWindowDimensions hook. This is because the hook
@@ -38,6 +38,10 @@ export default function HomeScreen() {
 
   const [pressed, setPressed] =  useState<boolean>(false);
 
+  const [longPressed, setLongPressed] = useState<boolean>(false);
+  const [deletePressed, setDeletePressed] = useState<boolean>(false);
+
+
   // Event handling for addNewButton
   // Hook: useEffect hook for side effects(navigation)
   const [newNoteBtnPressed, setNewNoteBtnPressed] = useState<boolean>(false);
@@ -52,10 +56,11 @@ export default function HomeScreen() {
   // Event handling for noteContainer
   const [noteContainerPressed, setNoteContainerPressed] = useState<boolean>(false);
 
-  // TODO: Learn more about useRef
   // Hook: useRef is used to store state that is not needed for rendering.
   // It does not trigger a re-render
   const currentItemIdRef = useRef< number>(0);
+
+  useNotesStorageDelete(currentItemIdRef.current, deletePressed);
 
   useEffect(()=> {
     if (noteContainerPressed) {
@@ -125,16 +130,33 @@ export default function HomeScreen() {
               currentItemIdRef.current = item.id;
               }
             }
-            //onLongPress={}
+            onLongPress={() => {
+              currentItemIdRef.current = item.id;
+              setLongPressed(true);
+            }}
           >
             <ThemedView style = {styles.noteContainer}>
               <ThemedText type="subtitle">{item.title}</ThemedText>
               <ThemedText type='defaultSemiBold'>I need a subtitle generator</ThemedText>
+              <Pressable
+              onPress={() => {
+                setDeletePressed(true);
+                //currentItemIdRef.current = 0; // Reset the currentItemId because the note is deleted
+              }}
+              onPressOut={() => { // reset the state
+                currentItemIdRef.current = 0;
+                setDeletePressed(false);
+                setLongPressed(false);
+              }}
+              // TODO: delete is not showing completely in ANDROID
+              style={[{display: longPressed ? 'flex' : 'none'}, styles.deleteButton]}>
+                <ThemedText type="delete">delete</ThemedText> 
+              </Pressable>
           </ThemedView>
           </Pressable>
           
         )}
-        ></FlatList>
+        ></FlatList> 
       ) : (
         <View style={[styles.flatListOrDefault, styles.default]}>
           <IconSymbol
@@ -147,8 +169,7 @@ export default function HomeScreen() {
         </View>
         
       )
-        
-      }
+    }
       <Pressable
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
@@ -201,6 +222,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     // Elevation for Android
     elevation: 3,
+  },
+
+  deleteButton: {
+    position: "absolute",
+    top: 57,
+    right: 10,
   },
 
   addNoteBtn: {

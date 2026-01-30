@@ -1,6 +1,6 @@
 
 import { StyleSheet, View, AppState, AppStateStatus } from "react-native";
-import { useEffect, useState, useRef, use} from "react";
+import { useEffect, useState, useRef} from "react";
 import { ThemedText } from "@/components/themed-text";
 import { getFormattedDate } from "@/utils/date";
 import { ThemedInput } from "@/components/themed-input";

@@ -10,11 +10,12 @@ export function getIntlFormattedDate(locale: Intl.Locale): string {
 }
 
 export function getFormattedDate(date: Date): string {
-  const day = date.getDate();
+  const day = date.getDate() < 10 ? `0${date.getDate()}`: date.getDate();
   const month = date.toLocaleString('de', { month: 'long' });
   //const year = date.getFullYear();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
+  const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
+  const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+
 
   return `${day}. ${month}, ${hours}:${minutes}`;
 }
