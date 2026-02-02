@@ -3,7 +3,7 @@
     "name": "notes-app-mobile",
     "slug": "notes-app-mobile",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "portrait", // Tip: default if you want the app to be able to rotate.
     "icon": "./assets/images/icon.png",
     "scheme": "notesappmobile",
     "userInterfaceStyle": "automatic",
