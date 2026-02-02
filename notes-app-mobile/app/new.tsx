@@ -1,13 +1,14 @@
 
-import { StyleSheet, View, AppState, AppStateStatus } from "react-native";
-import { useEffect, useState, useRef} from "react";
+import { StyleSheet, View} from "react-native";
+import { useEffect, useState} from "react";
 import { ThemedText } from "@/components/themed-text";
 import { getFormattedDate } from "@/utils/date";
 import { ThemedInput } from "@/components/themed-input";
 import { useLocalSearchParams } from "expo-router";
 import { useNotesStorageGetOne, useNotesStoragePostOneOrPutOne} from "@/hooks/notes/use-notes-storage";
 
-//const { height, width } = Dimensions.get('window');
+
+// TODO: Make all styles dynamic
 
 export default function NewOrEditNoteScreen() {
 
@@ -82,7 +83,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         //backgroundColor: "red",
-        margin: 20,
+        marginHorizontal: 20,
+        marginTop: 100,
         gap: 20,
     
     },
