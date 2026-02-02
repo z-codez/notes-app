@@ -3,7 +3,7 @@ import { Note, getNotes, getNote, addNote, updateNote, SaveAndUpdateNote, delete
 import {useFocusEffect} from "expo-router";
 import { AppState, AppStateStatus } from "react-native";
 
-// TODO: Finish this hook
+
 export function useNotesStorageGetAll() {
     // Tip: useState to trigger re-renders when state changes
     const [notes, setNotes] = useState<Note[]>([]);
@@ -80,10 +80,10 @@ export function useNotesStoragePostOneOrPutOne(note: SaveAndUpdateNote) {
     }, [note]);
 
     // Lifecycle auto save
-    // TODO: Implement saving note, in these cases:
+    // Implement saving note, in these cases:
     // 1. When the app is in the background
     // 2. When the screen is unfocused
-    // 3. Lastly, implement incremental persistence with debounce
+    // 3. Lastly, implement incremental persistence with debounce (Decided against implementing this for this app)
 
 
     //const appStateRef = useRef(AppState.currentState);
