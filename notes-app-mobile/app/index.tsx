@@ -20,17 +20,9 @@ import { useNotesStorageDelete, useNotesStorageGetAll } from "@/hooks/notes/use-
 // causes unnecessary re-renders, which is not needed for my current use case.
 const {height, width } = Dimensions.get('window');
 
+// TODO: make all styles dynamic
 
 export default function HomeScreen() {
-
-  // let doesInternetWork = null;
-
-  // fetch().then((state: any) => {
-  //   if (state.isInternetReachable) doesInternetWork = true;
-  // });
-
-  // if (doesInternetWork) {}
-  //const {notes, loading, error} = useNotesGetAll();
 
   const {notes, loading , error} = useNotesStorageGetAll();
 
@@ -66,16 +58,12 @@ export default function HomeScreen() {
     if (noteContainerPressed) {
       router.push({pathname: '/new', params: {id: currentItemIdRef.current}});
       setNoteContainerPressed(false);
-      currentItemIdRef.current = 0; // TODO: test first
+      currentItemIdRef.current = 0; 
     }
   }, [noteContainerPressed, router]);
 
-  const showFlatList = notes.length > 0; // TODO: Use Memo or use Effect ?
   const colorScheme = useColorScheme();
 
-
-  // TODO: Add a loading spinner. Should be a component
-  // If Data is still loading. This is a loading screen
   if(loading) {
     return (
       <SafeAreaContainer
@@ -91,8 +79,6 @@ export default function HomeScreen() {
     );
   }
 
-  // If there is an error, this is an error screen.
-  // Should be a component
   if (error) {
     return (
       <SafeAreaContainer
@@ -109,7 +95,6 @@ export default function HomeScreen() {
   }
 
 
-  
   return (
     <SafeAreaContainer
     style = {[styles.container]}>
@@ -118,7 +103,7 @@ export default function HomeScreen() {
         <HelloWave />
       </View>
       {/* If else statement in JSX is forbidden, I used a ternary operator*/}
-      {showFlatList ? (
+      {notes.length > 0 ? (
         <FlatList style={styles.flatListOrDefault}
         data={notes}
         keyExtractor={(item) => item.id.toString()}
@@ -150,7 +135,7 @@ export default function HomeScreen() {
               }}
               // TODO: delete is not showing completely in ANDROID
               style={[{display: longPressed ? 'flex' : 'none'}, styles.deleteButton]}>
-                <ThemedText type="delete">delete</ThemedText> 
+                <ThemedText type="delete" style={styles.deleteButtonText}>delete</ThemedText> 
               </Pressable>
           </ThemedView>
           </Pressable>
@@ -228,6 +213,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 57,
     right: 10,
+  },
+
+  deleteButtonText: {
+    // Tip: Explicit fontFamily ensure that Android renders correctly
+    fontFamily: "Roboto"
   },
 
   addNoteBtn: {
