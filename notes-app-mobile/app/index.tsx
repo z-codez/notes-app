@@ -12,6 +12,7 @@ import { ThemedView } from "@/components/themed-view";
 import { useRouter} from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { SafeAreaContainer } from "@/components/safe-area-container";
+import { subtitleGenerator } from "@/utils/string-formater";
 //import { fetch } from "@react-native-community/netinfo";
 import { useNotesStorageDelete, useNotesStorageGetAll } from "@/hooks/notes/use-notes-storage";
 //import { useNotesGetAll } from "@/hooks/notes/use-notes-api";
@@ -94,7 +95,6 @@ export default function HomeScreen() {
     );
   }
 
-
   return (
     <SafeAreaContainer
     style = {[styles.container]}>
@@ -122,18 +122,16 @@ export default function HomeScreen() {
           >
             <ThemedView style = {styles.noteContainer}>
               <ThemedText type="subtitle">{item.title}</ThemedText>
-              <ThemedText type='defaultSemiBold'>I need a subtitle generator</ThemedText>
+              <ThemedText type='defaultSemiBold'>{item.content ?  subtitleGenerator(item.content) : "No text"}</ThemedText>
               <Pressable
               onPress={() => {
                 setDeletePressed(true);
-                //currentItemIdRef.current = 0; // Reset the currentItemId because the note is deleted
               }}
               onPressOut={() => { // reset the state
-                currentItemIdRef.current = 0;
+                currentItemIdRef.current = 0; // Reset the currentItemId because the note is deleted
                 setDeletePressed(false);
                 setLongPressed(false);
               }}
-              // TODO: delete is not showing completely in ANDROID
               style={[{display: longPressed ? 'flex' : 'none'}, styles.deleteButton]}>
                 <ThemedText type="delete" style={styles.deleteButtonText}>delete</ThemedText> 
               </Pressable>
@@ -226,9 +224,6 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 50,
     alignSelf: 'flex-end',
-    // TODO: adjust position dynamically based on device dimensions
-    //marginRight: 10,
-    //marginBottom: 15,
 
     // 3d shadow
     shadowColor: '#000',
