@@ -30,6 +30,7 @@ const { height, width } = Dimensions.get("window");
 
 export default function HomeScreen() {
 
+
   const cancelDelete = () => {
     setDeletePressed(false);
     setActiveItemId(0);
@@ -163,9 +164,8 @@ export default function HomeScreen() {
                     }}
                     onPressOut={() => {
                       // reset the state
-                      setActiveItemId(0); // Reset the currentItemId because the note is deleted
-                      setDeletePressed(false);
-                      currentItemIdRef.current = 0;
+                      cancelDelete(); 
+                      currentItemIdRef.current = 0;// Reset the currentItemId because the note is deleted
                     }}
                     //style={styles.deleteButton}
                   >
@@ -175,9 +175,7 @@ export default function HomeScreen() {
                   </Pressable>
                   <ThemedText type="defaultSemiBold">|</ThemedText>
                   <Pressable onPress={cancelDelete}>
-                    <ThemedText type="delete" style={styles.deleteButtonText}>
-                      cancel
-                    </ThemedText>
+                    <ThemedText type="delete" style={styles.deleteButtonText}>cancel</ThemedText>
                   </Pressable>
                   </ThemedView>
                   
