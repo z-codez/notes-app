@@ -12,10 +12,10 @@ import { initDb, resetDb } from '@/services/local-storage/sql-lite/initDb';
 export default function RootLayout() {
 
   useEffect(() => {
-    if (__DEV__) {
-      resetDb();
-      initDb();
-    }
+    // if (__DEV__) {
+    //   resetDb();  
+    // }
+    initDb();
     
   }, []);
 
@@ -34,6 +34,7 @@ export default function RootLayout() {
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="new" options={{
              title: '',
+             headerTransparent: true,
              headerStyle: {
               backgroundColor: 
                 colorScheme === 'dark' 
